@@ -14,11 +14,75 @@ As example used tiny yolo model for detecting eyes on video frame.
 ### Installation
 
 Install darknet from official website [official website ](https://pjreddie.com/darknet/yolo/)
-
 ```bash
-git clone https://github.com/pjreddie/darknet
-cd darknet
-make
+$ git clone https://github.com/pjreddie/darknet
+$ cd darknet
+```
+
+In src/image.c after _save_image_options_ function add code:
+```
+#ifdef NUMPY
+image ndarray_to_image(unsigned char* src, long* shape, long* strides)
+{
+    int h = shape[0];
+    int w = shape[1];
+    int c = shape[2];
+    int step_h = strides[0];
+    int step_w = strides[1];
+    int step_c = strides[2];
+    image im = make_image(w, h, c);
+    int i, j, k;
+    int index1, index2 = 0;
+
+    for(i = 0; i < h; ++i){
+            for(k= 0; k < c; ++k){
+                for(j = 0; j < w; ++j){
+
+                    index1 = k*w*h + i*w + j;
+                    index2 = step_h*i + step_w*j + step_c*k;
+                    //fprintf(stderr, "w=%d h=%d c=%d step_w=%d step_h=%d step_c=%d \n", w, h, c, step_w, step_h, step_c);
+                    //fprintf(stderr, "im.data[%d]=%u data[%d]=%f \n", index1, src[index2], index2, src[index2]/255.);
+                    im.data[index1] = src[index2]/255.;
+                }
+            }
+        }
+
+    rgbgr_image(im);
+
+    return im;
+}
+#endif
+```
+
+In src/image.h after _show_image_cv_ function add code:
+```
+#ifdef NUMPY
+image ndarray_to_image(unsigned char* src, long* shape, long* strides);
+#endif
+```
+
+In Makefile after _ifeq ($(OPENCV), 1)_ function add code (python 3.5):
+```
+ifeq ($(NUMPY), 1) 
+COMMON+= -DNUMPY -I/usr/include/python3.5/ -I/usr/lib/python3.5/dist-packages/numpy/core/include/numpy/
+CFLAGS+= -DNUMPY
+endif
+```
+and change flags:
+
+```
+GPU=1
+CUDNN=1
+OPENCV=1
+OPENMP=0
+NUMPY=1
+DEBUG=0
+
+```
+
+after compile library:
+```bash
+$ make
 ```
 
 
