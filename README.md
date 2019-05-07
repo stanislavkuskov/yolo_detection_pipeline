@@ -13,9 +13,14 @@ As example used tiny yolo model for detecting eyes on video frame.
 
 ### Installation
 
-* Mac OS X
-* Ubuntu
-* Windows (if applicable)
+Install darknet from official website [official website ](https://pjreddie.com/darknet/yolo/)
+
+`git clone https://github.com/pjreddie/darknet`
+
+`cd darknet`
+
+`make`
+
 
 ### Getting started
 
