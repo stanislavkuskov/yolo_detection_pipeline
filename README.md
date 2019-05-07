@@ -15,11 +15,11 @@ As example used tiny yolo model for detecting eyes on video frame.
 
 Install darknet from official website [official website ](https://pjreddie.com/darknet/yolo/)
 
-`git clone https://github.com/pjreddie/darknet`
-
-`cd darknet`
-
-`make`
+```bash
+git clone https://github.com/pjreddie/darknet
+cd darknet
+make
+```
 
 
 ### Getting started
