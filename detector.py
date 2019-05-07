@@ -5,7 +5,8 @@ import cv2
 import darknet
 import numpy
 
-class Detector():
+
+class Detector:
     def __init__(self, *args, **kwargs):
 
         self.__darknet = darknet
@@ -34,7 +35,7 @@ class Detector():
         pnum = ctypes.pointer(num)
         self.__darknet.predict_image(net, im)
         dets = self.__darknet.get_network_boxes(net, im.w, im.h, thresh,
-                                 hier_thresh, None, 0, pnum)
+                                                hier_thresh, None, 0, pnum)
         num = pnum[0]
         if nms: self.__darknet.do_nms_obj(dets, num, meta.classes, nms)
 
@@ -53,6 +54,7 @@ class Detector():
         self.__darknet.free_detections(dets, num)
         return res
 
+
 if __name__ == "__main__":
     # add darknet library
     detector = Detector()
@@ -60,8 +62,8 @@ if __name__ == "__main__":
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap.set(3, 640)
     # cap.set(4, 480)
-    net = darknet.load_net(b"resources/models/eyes_detector.cfg", b"resources/models/eyes_detector.weights", 0)
-    meta = darknet.load_meta(b"resources/models/eyes_detector.data")
+    net = darknet.load_net(b"resources/models/current/eyes_detector.cfg", b"resources/models/current/eyes_detector.weights", 0)
+    meta = darknet.load_meta(b"resources/models/current/eyes_detector.data")
     while True:
         ret, img = cap.read()
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -74,7 +76,8 @@ if __name__ == "__main__":
             pt1 = (xmin, ymin)
             pt2 = (xmax, ymax)
             cv2.rectangle(img, pt1, pt2, (0, 255, 0), 2)
-            cv2.putText(img, i[0].decode() + " [" + str(round(i[1] * 100, 1)) + "]", (pt1[0], pt1[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, [0, 255, 0], 1)
+            cv2.putText(img, i[0].decode() + " [" + str(round(i[1] * 100, 1)) + "]", (pt1[0], pt1[1] - 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, [0, 255, 0], 1)
         cv2.imshow("img", img)
 
         print(time.time() - start_time)

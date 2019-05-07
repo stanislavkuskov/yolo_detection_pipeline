@@ -1,2 +1,2 @@
 classes = 1
-names = resources/models/eyes_detector.names
+names = resources/models/current/eyes_detector.names
