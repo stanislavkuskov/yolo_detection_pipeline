@@ -37,7 +37,8 @@ class Detector:
         dets = self.__darknet.get_network_boxes(net, im.w, im.h, thresh,
                                                 hier_thresh, None, 0, pnum)
         num = pnum[0]
-        if nms: self.__darknet.do_nms_obj(dets, num, meta.classes, nms)
+        if nms:
+            self.__darknet.do_nms_obj(dets, num, meta.classes, nms)
 
         res = []
         for j in range(num):
@@ -50,7 +51,8 @@ class Detector:
                                 (b.x, b.y, b.w, b.h)))
 
         res = sorted(res, key=lambda x: -x[1])
-        if isinstance(image, bytes): self.__darknet.free_image(im)
+        if isinstance(image, bytes):
+            self.__darknet.free_image(im)
         self.__darknet.free_detections(dets, num)
         return res
 
@@ -62,7 +64,11 @@ if __name__ == "__main__":
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap.set(3, 640)
     # cap.set(4, 480)
-    net = darknet.load_net(b"resources/models/current/eyes_detector.cfg", b"resources/models/current/eyes_detector.weights", 0)
+    net = darknet.load_net(
+        b"resources/models/current/eyes_detector.cfg",
+        b"resources/models/current/eyes_detector.weights",
+        0
+    )
     meta = darknet.load_meta(b"resources/models/current/eyes_detector.data")
     while True:
         ret, img = cap.read()
@@ -72,12 +78,25 @@ if __name__ == "__main__":
         r = detector.detect(net, meta, img)
         for i in r:
             x, y, w, h = i[2][0], i[2][1], i[2][2], i[2][3]
-            xmin, ymin, xmax, ymax = detector.convert_back(float(x), float(y), float(w), float(h))
+            xmin, ymin, xmax, ymax = \
+                detector.convert_back(
+                    float(x),
+                    float(y),
+                    float(w),
+                    float(h)
+                )
             pt1 = (xmin, ymin)
             pt2 = (xmax, ymax)
             cv2.rectangle(img, pt1, pt2, (0, 255, 0), 2)
-            cv2.putText(img, i[0].decode() + " [" + str(round(i[1] * 100, 1)) + "]", (pt1[0], pt1[1] - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, [0, 255, 0], 1)
+            cv2.putText(
+                img,
+                i[0].decode() + " [" + str(round(i[1] * 100, 1)) + "]",
+                (pt1[0], pt1[1] - 20),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                [0, 255, 0],
+                1
+            )
         cv2.imshow("img", img)
 
         print(time.time() - start_time)
